@@ -41,9 +41,8 @@ will need to set up your own backup process.
 Example add-on configuration:
 
 ```yaml
-access:
-  domain: homeassistant.local
-  add_port: 9090
+domain: homeassistant.local
+use_ssl: false
 default_language: us
 share_max_size_gb: 1.5
 share_max_valid_days: 365
@@ -56,12 +55,16 @@ conf_overrides:
 
 **Note**: \_This is just an example, don't copy and paste it! Create your own!
 
-### Option: `access.domain`
+### Option: `domain`
 
-The domain users will access Sharry at. The three `access` settings will determine
-the base URL Sharry will use when generating URLs and configuring cookies.
+The domain users will access Sharry at.
 
-### Option: `access.use_ssl`
+Sharry is given a base URL that it uses for generating URLs and configuring cookies.
+That will be created from this option, the `use_ssl` option, and the port you list
+for `9090`. If the port isn't listed then the addon assumes you have a reverse proxy
+and users do not list a port when accessing Sharry.
+
+### Option: `use_ssl`
 
 If users will use SSL to access Sharry. Defaults to `false`.
 

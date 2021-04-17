@@ -7,6 +7,7 @@
   "description": "Sharry for Home Assistant",
   "services": ["mysql:want"],
   "auth_api": true,
+  "webui": "[PROTO:access.use_ssl]://[HOST:access.domain]:[PORT:]",
   "ports": {
     "9090/tcp": 9090
   },
@@ -14,11 +15,8 @@
     "9090/tcp": "HTTP listen port"
   },
   "options": {
-    "access": {
-      "domain": "homeassistant.local",
-      "use_ssl": false,
-      "add_port": 9090
-    },
+    "domain": "homeassistant.local",
+    "use_ssl": false,
     "default_language": "us",
     "share_max_size_gb": 1.5,
     "share_max_valid_days": 365,
@@ -27,11 +25,8 @@
     "conf_overrides": []
   },
   "schema": {
-    "access": {
-      "domain": "match([^\\/:]+)",
-      "use_ssl": "bool?",
-      "add_port": "port?"
-    },
+    "domain": "match([^\\/:]+)",
+    "use_ssl": "bool?",
     "default_language": "match([A-Za-z]{2})?",
     "share_max_size_gb": "float(0.01,)?",
     "share_max_valid_days": "int(1,)?",

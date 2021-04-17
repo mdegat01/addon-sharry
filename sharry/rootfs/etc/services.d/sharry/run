@@ -53,14 +53,14 @@ conf_props+=( \
 
 # Set base URL
 bashio::log.debug "Setting base URL for Sharry..."
-if bashio::config.true 'access.use_ssl'; then
+if bashio::config.true 'use_ssl'; then
     base_url='https://'
 else
     base_url='http://'
 fi
-base_url+=$(bashio::config 'access.domain')
-if bashio::config.exists 'access.add_port'; then
-    base_url+=":$(bashio::config 'access.add_port')"
+base_url+=$(bashio::config 'domain')
+if bashio::var.has_value "$(bashio::addon.port 9090)"; then
+    base_url+=":$(bashio::addon.port 9090)"
 fi
 bashio::log.info "Sharry will be available at ${base_url}"
 conf_props+=("-D${SHARRY}.base-url=\"${base_url}\"")

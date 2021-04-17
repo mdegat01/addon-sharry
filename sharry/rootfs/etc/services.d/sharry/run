@@ -1,0 +1,90 @@
+#!/usr/bin/with-contenv bashio
+# shellcheck shell=bash
+# ==============================================================================
+# Home Assistant Add-on: Sharry
+# Runs Sharry
+# ==============================================================================
+
+readonly SHARRY=sharry.restserver
+declare host
+declare port
+declare username
+declare password
+declare property
+declare value
+declare base_url
+declare db_type=mariadb
+declare database=sharry
+declare -a conf_props=("-Dlogback.configurationFile=/etc/sharry/logback.xml")
+
+# Load user's custom configuration overrides
+bashio::log.debug "Loading 'conf_overrides'..."
+for var in $(bashio::config 'conf_overrides|keys'); do
+    property=$(bashio::config "conf_overrides[${var}].property")
+    value=$(bashio::config "env_vars[${var}].value")
+    if [[ ${property} =~ secret|password ]]; then
+        bashio::log.info "Setting ${property} to ******"
+    else
+        bashio::log.info "Setting ${property} to ${value}"
+    fi
+    conf_props+=("-D${name}=\"${value//\"/\\\"}\"")
+done
+
+# Set DB URL
+bashio::log.debug "Setting DB URL..."
+if ! bashio::config.is_empty 'remote_db_host'; then
+    db_type=$(bashio::config 'remote_db_type')
+    host=$(bashio::config 'remote_db_host')
+    port=$(bashio::config 'remote_db_port')
+    username=$(bashio::config 'remote_db_username')
+    password=$(bashio::config 'remote_db_password')
+    database=$(bashio::config 'remote_db_database')
+else
+    host=$(bashio::services 'mysql' 'host')
+    port=$(bashio::services 'mysql' 'port')
+    username=$(bashio::services 'mysql' 'username')
+    password=$(bashio::services 'mysql' 'password')
+fi
+conf_props+=( \
+    "-D${SHARRY}.backend.jdbc.url=\"jdbc:${db_type}://${host}:${port}/${database}\"" \
+    "-D${SHARRY}.backend.jdbc.user=\"${username}\"" \
+    "-D${SHARRY}.backend.jdbc.password=\"${password}\"" \
+)
+
+# Set base URL
+bashio::log.debug "Setting base URL for Sharry..."
+if bashio::config.true 'access.use_ssl'; then
+    base_url='https://'
+else
+    base_url='http://'
+fi
+base_url+=$(bashio::config 'access.domain')
+if bashio::config.exists 'access.add_port'; then
+    base_url+=":$(bashio::config 'access.add_port')"
+fi
+bashio::log.info "Sharry will be available at ${base_url}"
+conf_props+=("-D${SHARRY}.base-url=\"${base_url}\"")
+
+# Add other config options to properties array
+bashio::log.debug "Adding in secret, language and share config options..."
+conf_props+=("-D${SHARRY}.backend.auth.server-secret=\"$(bashio::config 'server_secret')\"")
+
+if ! bashio::config.is_empty 'default_language'; then
+    conf_props+=("-D${SHARRY}.webapp.default-language=\"$(bashio::config 'default_language')\"")
+fi
+
+if bashio::config.exists 'share_max_size'; then
+    conf_props+=("-D${SHARRY}.backend.share.max-size=\"$(bashio::config 'share_max_size')g\"")
+fi
+
+if bashio::config.exists 'share_max_valid_days'; then
+    conf_props+=("-D${SHARRY}.backend.share.max-validity=\"$(bashio::config 'share_max_valid_days')days\"")
+fi
+
+bashio::log.debug
+bashio::log.debug "Printing all startup flags being provided to Sharry..."
+bashio::log.debug "${conf_props[@]}"
+bashio::log.debug
+bashio::log.info "Handing over control to Sharry..."
+exec s6-setuidgid abc \
+    /opt/sharry/bin/sharry-restserver "${conf_props[@]}" -- /etc/sharry/sharry.conf

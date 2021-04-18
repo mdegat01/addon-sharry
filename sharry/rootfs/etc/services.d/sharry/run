@@ -28,7 +28,7 @@ for var in $(bashio::config 'conf_overrides|keys'); do
     else
         bashio::log.info "Setting ${property} to ${value}"
     fi
-    conf_props+=("-D${name}=${value//\"/\\\"}")
+    conf_props+=("-D${property}=${value//\"/\\\"}")
 done
 
 # Set DB URL

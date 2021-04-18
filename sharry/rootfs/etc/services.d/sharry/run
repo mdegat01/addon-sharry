@@ -22,7 +22,7 @@ declare -a conf_props=("-Dlogback.configurationFile=/etc/sharry/logback.xml")
 bashio::log.debug "Loading 'conf_overrides'..."
 for var in $(bashio::config 'conf_overrides|keys'); do
     property=$(bashio::config "conf_overrides[${var}].property")
-    value=$(bashio::config "env_vars[${var}].value")
+    value=$(bashio::config "conf_overrides[${var}].value")
     if [[ ${property} =~ secret|password ]]; then
         bashio::log.info "Setting ${property} to ******"
     else

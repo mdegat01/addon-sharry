@@ -13,6 +13,7 @@ declare password
 declare property
 declare value
 declare base_url
+declare log_level
 declare db_type=mariadb
 declare database=sharry
 declare -a conf_props=("-Dlogback.configurationFile=/etc/sharry/logback.xml")
@@ -27,7 +28,7 @@ for var in $(bashio::config 'conf_overrides|keys'); do
     else
         bashio::log.info "Setting ${property} to ${value}"
     fi
-    conf_props+=("-D${name}=\"${value//\"/\\\"}\"")
+    conf_props+=("-D${name}=${value//\"/\\\"}")
 done
 
 # Set DB URL
@@ -46,9 +47,9 @@ else
     password=$(bashio::services 'mysql' 'password')
 fi
 conf_props+=( \
-    "-D${SHARRY}.backend.jdbc.url=\"jdbc:${db_type}://${host}:${port}/${database}\"" \
-    "-D${SHARRY}.backend.jdbc.user=\"${username}\"" \
-    "-D${SHARRY}.backend.jdbc.password=\"${password}\"" \
+    "-D${SHARRY}.backend.jdbc.url=jdbc:${db_type}://${host}:${port}/${database}" \
+    "-D${SHARRY}.backend.jdbc.user=${username}" \
+    "-D${SHARRY}.backend.jdbc.password=${password}" \
 )
 
 # Set base URL
@@ -58,33 +59,39 @@ if bashio::config.true 'use_ssl'; then
 else
     base_url='http://'
 fi
-base_url+=$(bashio::config 'domain')
+base_url+="$(bashio::config 'domain')"
 if bashio::var.has_value "$(bashio::addon.port 9090)"; then
     base_url+=":$(bashio::addon.port 9090)"
 fi
 bashio::log.info "Sharry will be available at ${base_url}"
-conf_props+=("-D${SHARRY}.base-url=\"${base_url}\"")
+conf_props+=("-D${SHARRY}.base-url=${base_url}")
 
 # Add other config options to properties array
 bashio::log.debug "Adding in secret, language and share config options..."
-conf_props+=("-D${SHARRY}.backend.auth.server-secret=\"$(bashio::config 'server_secret')\"")
+conf_props+=("-D${SHARRY}.backend.auth.server-secret=$(bashio::config 'server_secret')")
 
 if ! bashio::config.is_empty 'default_language'; then
-    conf_props+=("-D${SHARRY}.webapp.default-language=\"$(bashio::config 'default_language')\"")
+    conf_props+=("-D${SHARRY}.webapp.default-language=$(bashio::config 'default_language')")
 fi
 
-if bashio::config.exists 'share_max_size'; then
-    conf_props+=("-D${SHARRY}.backend.share.max-size=\"$(bashio::config 'share_max_size')g\"")
+if bashio::config.exists 'share_max_size_gb'; then
+    conf_props+=("-D${SHARRY}.backend.share.max-size=$(bashio::config 'share_max_size_gb')g")
 fi
 
 if bashio::config.exists 'share_max_valid_days'; then
-    conf_props+=("-D${SHARRY}.backend.share.max-validity=\"$(bashio::config 'share_max_valid_days')days\"")
+    conf_props+=("-D${SHARRY}.backend.share.max-validity=$(bashio::config 'share_max_valid_days')d")
 fi
 
-bashio::log.debug
-bashio::log.debug "Printing all startup flags being provided to Sharry..."
-bashio::log.debug "${conf_props[@]}"
-bashio::log.debug
+log_level="$(bashio::config 'log_level')"
+if bashio::var.equals "${log_level}" "debug" || bashio::var.equals "${log_level}" "trace"; then
+    bashio::log.debug
+    bashio::log.debug "Printing all startup flags being provided to Sharry..."
+    for prop in "${conf_props[@]}"; do
+        bashio::log.debug "${prop}"
+    done
+    bashio::log.debug
+fi
+
 bashio::log.info "Handing over control to Sharry..."
 exec s6-setuidgid abc \
     /opt/sharry/bin/sharry-restserver "${conf_props[@]}" -- /etc/sharry/sharry.conf

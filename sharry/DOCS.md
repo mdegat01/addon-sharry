@@ -53,7 +53,7 @@ conf_overrides:
     value: Happy sharing!
 ```
 
-**Note**: \_This is just an example, don't copy and paste it! Create your own!
+**Note**: _This is just an example, don't copy and paste it! Create your own!_
 
 ### Option: `domain`
 
@@ -67,6 +67,9 @@ and users do not list a port when accessing Sharry.
 ### Option: `use_ssl`
 
 If users will use SSL to access Sharry. Defaults to `false`.
+
+**Note**: _Enabling SSL access is out of scope for Sharry. This option is for users
+who use a reverse proxy and enable SSL there._
 
 ### Option: `access.add_port`
 

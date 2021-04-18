@@ -8,6 +8,7 @@
   "services": ["mysql:want"],
   "auth_api": true,
   "webui": "http://[HOST]:[PORT:9090]",
+  "watchdog": "http://[HOST]:9090/api/v2/open/info/version",
   "ports": {
     "9090/tcp": 9090
   },

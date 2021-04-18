@@ -1,0 +1,7 @@
+#!/bin/bash
+curl \
+  --fail \
+  --silent \
+  --user "$1:$2" \
+  --header "X-Supervisor-Token: ${SUPERVISOR_TOKEN}" \
+  http://supervisor/auth

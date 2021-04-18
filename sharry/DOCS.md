@@ -11,6 +11,19 @@ Then find Sharry in the store and click install:
 
 [![Open your Home Assistant instance and show the dashboard of a Supervisor add-on.][add-addon-shield]][add-addon]
 
+## Access & Login
+
+Sharry is setup to authenticate with Home Assistant by default. This means any
+HA user can open the UI and login with their HA credentials. Each HA user will
+have their own account in Sharry and their own shares.
+
+The addon has disabled all other login methods and new user registration by default.
+If you want to allow users to have accounts just with Sharry you can enable user
+registration and other login methods using the `conf_overrides` option shown below.
+You will need to configure one of the other login methods under `sharry.restserver.backend.auth`
+and set `sharry.restserver.backend.signup.mode` to either `open` or `invite`. See
+[Sharry coniguration][sharry-docs-configure] for more information.
+
 ## Database Setup
 
 [Sharry][sharry] requires a Postgres or MariaDB database to store its data. By
@@ -57,12 +70,10 @@ conf_overrides:
 
 ### Option: `domain`
 
-The domain users will access Sharry at.
-
-Sharry is given a base URL that it uses for generating URLs and configuring cookies.
-That will be created from this option, the `use_ssl` option, and the port you list
-for `9090`. If the port isn't listed then the addon assumes you have a reverse proxy
-and users do not list a port when accessing Sharry.
+The domain users will access Sharry at. Sharry is given a base URL that it uses
+for generating URLs and configuring cookies. That will be created from this option,
+the `use_ssl` option, and the port you list for `9090`. If the port isn't listed
+then the addon assumes users do not include a port in the URL when accessing Sharry.
 
 ### Option: `use_ssl`
 
@@ -137,7 +148,7 @@ This option lets you provide an array of config overrides to customize advanced
 parts of Sharry's config which haven't been exposed as options above. You can see
 the full set of available options here:
 
-<https://eikek.github.io/sharry/doc/configure>
+<https://eikek.github.io/sharry/doc/configure#default-config>
 
 **Note**: _Changing these options can possibly cause issues with your instance.
 USE AT YOUR OWN RISK!_
@@ -226,8 +237,10 @@ SOFTWARE.
 [hocon]: https://github.com/lightbend/config/blob/master/HOCON.md#hocon-human-optimized-config-object-notation
 [hocon-docs-arrays]: https://github.com/lightbend/config/blob/master/README.md#set-array-values-outside-configuration-files
 [hocon-docs-props]: https://github.com/lightbend/config/blob/master/HOCON.md#java-properties-mapping
+[iso-3166-1]: https://en.wikipedia.org/wiki/ISO_3166-1
 [issue]: https://github.com/mdegat01/addon-sharry/issues
 [mdegat01]: https://github.com/mdegat01
 [releases]: https://github.com/mdegat01/addon-sharry/releases
 [semver]: http://semver.org/spec/v2.0.0
 [sharry]: https://eikek.github.io/sharry/
+[sharry-docs-configure]: https://eikek.github.io/sharry/doc/configure

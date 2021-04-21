@@ -8,7 +8,7 @@ include <tunables/global>
 @{do_usr}=@{fs_root}/usr/
 @{do_var}=@{fs_root}/var/
 
-profile sharry flags=(complain,attach_disconnected,mediate_deleted) {
+profile sharry flags=(attach_disconnected,mediate_deleted) {
   include <abstractions/base>
   include <abstractions/bash>
 
@@ -68,7 +68,7 @@ profile sharry flags=(complain,attach_disconnected,mediate_deleted) {
   /opt/sharry/bin/sharry-restserver                   rix,
   /usr/lib/jvm/java-[1-9][0-9]-openjdk/bin/java       rmcx -> sharry-java,
 
-  profile sharry-java flags=(complain,attach_disconnected,mediate_deleted) {
+  profile sharry-java flags=(attach_disconnected,mediate_deleted) {
     include <abstractions/base>
 
     # Signalling - receive from above, signal ourselves
@@ -108,7 +108,7 @@ profile sharry flags=(complain,attach_disconnected,mediate_deleted) {
   }
 
 
-  profile /usr/bin/mysql flags=(complain,attach_disconnected,mediate_deleted) {
+  profile /usr/bin/mysql flags=(attach_disconnected,mediate_deleted) {
     include <abstractions/base>
     include <abstractions/mysql>
   }

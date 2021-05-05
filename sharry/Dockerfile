@@ -3,7 +3,7 @@ ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64
 # https://hub.docker.com/_/alpine
 FROM alpine:3.13.5 as build
 # https://github.com/eikek/sharry/releases
-ENV SHARRY_VERSION=1.6.0
+ENV SHARRY_VERSION=1.7.0
 
 RUN set -eux; \
     apk update; \
@@ -13,7 +13,7 @@ RUN set -eux; \
         ; \
     mkdir -p /opt; \
     curl -J -L -o /tmp/sharry.zip \
-        "https://github.com/eikek/sharry/releases/download/release%2F${SHARRY_VERSION}/sharry-restserver-${SHARRY_VERSION}.zip"; \
+        "https://github.com/eikek/sharry/releases/download/v${SHARRY_VERSION}/sharry-restserver-${SHARRY_VERSION}.zip"; \
     unzip /tmp/sharry.zip -d /opt; \
     mv /opt/sharry-restserver-${SHARRY_VERSION} /opt/sharry; \
     rm /tmp/sharry.zip;

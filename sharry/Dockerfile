@@ -13,7 +13,7 @@ RUN set -eux; \
         ; \
     mkdir -p /opt; \
     curl -J -L -o /tmp/sharry.zip \
-        "https://github.com/eikek/sharry/releases/download/release%2Fv${SHARRY_VERSION}/sharry-restserver-${SHARRY_VERSION}.zip"; \
+        "https://github.com/eikek/sharry/releases/download/v${SHARRY_VERSION}/sharry-restserver-${SHARRY_VERSION}.zip"; \
     unzip /tmp/sharry.zip -d /opt; \
     mv /opt/sharry-restserver-${SHARRY_VERSION} /opt/sharry; \
     rm /tmp/sharry.zip;

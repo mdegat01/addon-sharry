@@ -9,7 +9,7 @@ RUN set -eux; \
     apk update; \
     apk add --no-cache --virtual .build-deps \
         unzip=6.0-r9 \
-        curl=7.77.0-r1 \
+        curl=7.78.0-r0 \
         ; \
     mkdir -p /opt; \
     curl -J -L -o /tmp/sharry.zip \
@@ -25,7 +25,7 @@ FROM ${BUILD_FROM}:10.0.0
 RUN set -eux; \
     apk update; \
     apk add --no-cache \
-        mariadb-client=10.5.11-r0 \
+        mariadb-client=10.5.12-r0 \
         netcat-openbsd=1.130-r2 \
         openjdk11-jre=11.0.11_p9-r0 \
         ; \

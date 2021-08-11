@@ -20,7 +20,7 @@ RUN set -eux; \
 
 
 # https://github.com/hassio-addons/addon-base/releases
-FROM ${BUILD_FROM}:10.0.0
+FROM ${BUILD_FROM}:10.0.1
 
 RUN set -eux; \
     apk update; \

@@ -1,7 +1,7 @@
 ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64
 
 # https://hub.docker.com/_/alpine
-FROM alpine:3.14.3 as build
+FROM alpine:3.15.0 as build
 # https://github.com/eikek/sharry/releases
 ENV SHARRY_VERSION=1.9.0
 
@@ -9,7 +9,7 @@ RUN set -eux; \
     apk update; \
     apk add --no-cache --virtual .build-deps \
         unzip=6.0-r9 \
-        curl=7.79.1-r0 \
+        curl=7.80.0-r0 \
         ; \
     mkdir -p /opt; \
     curl -J -L -o /tmp/sharry.zip \

@@ -20,14 +20,14 @@ RUN set -eux; \
 
 
 # https://github.com/hassio-addons/addon-base/releases
-FROM ${BUILD_FROM}:10.2.3
+FROM ${BUILD_FROM}:11.0.0
 
 RUN set -eux; \
     apk update; \
     apk add --no-cache \
         mariadb-client=10.5.13-r0 \
-        netcat-openbsd=1.130-r2 \
-        openjdk11-jre=11.0.11_p9-r0 \
+        netcat-openbsd=1.130-r3 \
+        openjdk11-jre=11.0.13_p8-r0 \
         ; \
     java -version; \
     \

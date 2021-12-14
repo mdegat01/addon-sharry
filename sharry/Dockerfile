@@ -25,7 +25,7 @@ FROM ${BUILD_FROM}:11.0.0
 RUN set -eux; \
     apk update; \
     apk add --no-cache \
-        mariadb-client=10.6.4-r1 \
+        mariadb-client=10.6.4-r2 \
         netcat-openbsd=1.130-r3 \
         openjdk11-jre=11.0.13_p8-r0 \
         ; \

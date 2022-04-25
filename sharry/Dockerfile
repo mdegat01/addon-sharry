@@ -27,7 +27,7 @@ RUN set -eux; \
     apk add --no-cache \
         mariadb-client=10.6.7-r0 \
         netcat-openbsd=1.130-r3 \
-        openjdk11-jre=11.0.14_p9-r0 \
+        openjdk11-jre=11.0.15_p10-r0 \
         ; \
     java -version; \
     \

@@ -7,6 +7,7 @@ arch:
   - aarch64
   - amd64
 description: Sharry for Home Assistant
+codenotary: codenotary@degatano.com
 services:
   - mysql:want
 auth_api: true

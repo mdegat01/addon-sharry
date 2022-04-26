@@ -20,7 +20,8 @@ RUN set -eux; \
 
 
 # https://github.com/hassio-addons/addon-base/releases
-FROM ${BUILD_FROM}:11.1.2
+# hadolint ignore=DL3006
+FROM ${BUILD_FROM}
 
 RUN set -eux; \
     apk update; \

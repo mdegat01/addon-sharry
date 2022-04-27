@@ -3,7 +3,7 @@ ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64
 # https://hub.docker.com/_/alpine
 FROM alpine:3.15.4 as build
 # https://github.com/eikek/sharry/releases
-ENV SHARRY_VERSION=1.10.0
+ENV SHARRY_VERSION=1.9.0
 
 RUN set -eux; \
     apk update; \

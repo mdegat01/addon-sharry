@@ -40,7 +40,7 @@ RUN set -eux; \
 # Add Sharry
 COPY --from=build --chown=abc:abc /opt/sharry /opt/sharry
 
-COPY rootfs /
+COPY --chown=abc:abc rootfs /
 WORKDIR /data/sharry
 
 # Build arguments

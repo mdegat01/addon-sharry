@@ -1,32 +1,29 @@
 ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64
 
-# https://hub.docker.com/_/alpine
-FROM alpine:3.15.4 as build
-# https://github.com/eikek/sharry/releases
-ENV SHARRY_VERSION=1.9.0
-
-RUN set -eux; \
-    apk update; \
-    apk add --no-cache --virtual .build-deps \
-        unzip=6.0-r9 \
-        curl=7.80.0-r1 \
-        ; \
-    mkdir -p /opt; \
-    curl -J -L -o /tmp/sharry.zip \
-        "https://github.com/eikek/sharry/releases/download/v${SHARRY_VERSION}/sharry-restserver-${SHARRY_VERSION}.zip"; \
-    unzip /tmp/sharry.zip -d /opt; \
-    mv /opt/sharry-restserver-${SHARRY_VERSION} /opt/sharry; \
-    rm /tmp/sharry.zip;
-
-
 # https://github.com/hassio-addons/addon-base/releases
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
+# https://github.com/eikek/sharry/releases
+ARG SHARRY_VERSION=1.9.0
+
+# Add Sharry and java
 RUN set -eux; \
     apk update; \
+    \
+    apk add --no-cache --virtual .build-deps \
+        unzip=6.0-r9 \
+        ; \
+    mkdir -p /opt; \
+    curl -s -J -L -o /tmp/sharry.zip \
+        "https://github.com/eikek/sharry/releases/download/v${SHARRY_VERSION}/sharry-restserver-${SHARRY_VERSION}.zip"; \
+    unzip /tmp/sharry.zip -d /opt; \
+    mv /opt/sharry-restserver-${SHARRY_VERSION} /opt/sharry; \
+    rm /tmp/sharry.zip; \
+    apk del .build-deps; \
+    \
     apk add --no-cache \
-        mariadb-client=10.6.7-r0 \
+        mariadb-client=10.6.8-r0 \
         netcat-openbsd=1.130-r3 \
         openjdk11-jre=11.0.15_p10-r0 \
         ; \
@@ -35,11 +32,9 @@ RUN set -eux; \
     echo "Add user for Sharry" \
     mkdir -p /data/sharry; \
     addgroup -S abc; \
-    adduser -u 12345 -h /data/sharry -D -S abc -G abc;
+    adduser -u 12345 -h /data/sharry -D -S abc -G abc; \
+    chown -R abc:abc /opt/sharry;
     
-# Add Sharry
-COPY --from=build --chown=abc:abc /opt/sharry /opt/sharry
-
 COPY --chown=abc:abc rootfs /
 WORKDIR /data/sharry
 

@@ -13,7 +13,7 @@ RUN set -eux; \
     \
     apk add --no-cache --virtual .build-deps \
         unzip=6.0-r9 \
-        curl=7.80.0-r1 \
+        curl=7.80.0-r2 \
         ; \
     mkdir -p /opt; \
     curl -s -J -L -o /tmp/sharry.zip \
@@ -24,7 +24,7 @@ RUN set -eux; \
     apk del .build-deps; \
     \
     apk add --no-cache \
-        mariadb-client=10.6.7-r0 \
+        mariadb-client=10.6.8-r0 \
         netcat-openbsd=1.130-r3 \
         openjdk11-jre=11.0.15_p10-r0 \
         ; \

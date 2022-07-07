@@ -89,7 +89,7 @@ fi
 # --- SET LOG LEVEL ---
 # Can't be set with arguments or env variables, search & replace config file
 case "$(bashio::config 'log_level')" in \
-    trace)      log_level='Trace';& \
+    trace)      log_level='Trace' ;; \
     debug)      log_level='Debug' ;; \
     notice)     ;& \
     warning)    log_level='Warn' ;; \

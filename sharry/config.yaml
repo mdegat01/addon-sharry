@@ -25,6 +25,7 @@ options:
   share_max_size_gb: 1.5
   share_max_valid_days: 365
   server_secret: null
+  theme: light
   log_level: info
   conf_overrides: []
 schema:
@@ -34,6 +35,7 @@ schema:
   share_max_size_gb: float(0.01,)?
   share_max_valid_days: int(1,)?
   server_secret: password
+  theme: list(light|dark)?
   remote_db_type: list(mariadb|postgres)?
   remote_db_host: str?
   remote_db_port: port?

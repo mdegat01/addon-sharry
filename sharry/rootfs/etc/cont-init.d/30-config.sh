@@ -16,7 +16,7 @@ for var in $(bashio::config 'conf_overrides|keys'); do
     property=$(bashio::config "conf_overrides[${var}].property")
     if [[ ${property} =~ ^sharry[.]restserver[.]backend[.]auth[.]command ]]; then
         bashio::log.fatal
-        bashio::log.fatal "You're config attempts to override settings in the command"
+        bashio::log.fatal "Your config attempts to override settings in the command"
         bashio::log.fatal "auth module. This is not allowed as it would break the ability"
         bashio::log.fatal "of this addon to authenticate users with Home Assistant."
         bashio::log.fatal
@@ -28,7 +28,7 @@ for var in $(bashio::config 'conf_overrides|keys'); do
 
     elif [[ ${property} =~ ^sharry[.]restserver[.]backend[.]files ]]; then
         bashio::log.fatal
-        bashio::log.fatal "You're config attempts to override settings in the files module."
+        bashio::log.fatal "Your config attempts to override settings in the files module."
         bashio::log.fatal "This is not allowed as it could break the addon."
         bashio::log.fatal
         bashio::log.fatal "Remove any conf_overrides you have added with a property"

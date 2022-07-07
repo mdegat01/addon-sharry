@@ -95,15 +95,19 @@ profile sharry flags=(attach_disconnected,mediate_deleted) {
     @{do_etc}/ssl{,1.1}/openssl.cnf                   r,
     @{do_etc}/{hosts,passwd,resolv.conf}              r,
 
+    # Filesystem stores and migrations (I believe)
+    /bin/busybox                                      rix,
+
     # Runtime usage
-    owner /tmp/**                                     rw,
-    @{PROC}/[1-9]*/coredump_filter                    rw,
-    @{do_etc}/ssl/certs/java/**                       r,
-    @{do_run}/s6/services/sharry/                     r,
-    @{PROC}/[1-9]*/net/{if_inet6,ipv6_route}          r,
-    @{PROC}/[1-9]*/{cgroup,fd/,mountinfo,stat}        r,
+    /tmp/                                                     r,
+    owner /tmp/**                                             rwm,
+    @{PROC}/[1-9]*/coredump_filter                            rw,
+    @{do_etc}/ssl/certs/java/**                               r,
+    @{do_run}/s6/{legacy-services,services}/sharry/           r,
+    @{PROC}/[1-9]*/net/{if_inet6,ipv6_route}                  r,
+    @{PROC}/[1-9]*/{cgroup,cmdline,fd/,mountinfo,stat}        r,
     @{sys}/fs/cgroup/cpu,cpuacct/cpu.{shares,cfs_period_us,cfs_quota_us}  r,
-    @{sys}/fs/cgroup/memory/memory.{stat,limit_in_bytes,use_hierarchy}    r,
+    @{sys}/fs/cgroup/memory/memory.{stat,limit_in_bytes,memsw.limit_in_bytes,use_hierarchy}    r,
   }
 
 

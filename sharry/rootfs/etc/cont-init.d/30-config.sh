@@ -10,7 +10,6 @@ declare port
 declare username
 declare password
 declare property
-declare log_level
 
 # --- ADDITIONAL VALIDATION ---
 for var in $(bashio::config 'conf_overrides|keys'); do
@@ -24,6 +23,17 @@ for var in $(bashio::config 'conf_overrides|keys'); do
         bashio::log.fatal "Remove any conf_overrides you have added with a property"
         bashio::log.fatal "matching this pattern and try again:"
         bashio::log.fatal "'sharry.restserver.backend.auth.command.*'"
+        bashio::log.fatal
+        bashio::exit.nok
+
+    elif [[ ${property} =~ ^sharry[.]restserver[.]backend[.]files ]]; then
+        bashio::log.fatal
+        bashio::log.fatal "You're config attempts to override settings in the files module."
+        bashio::log.fatal "This is not allowed as it could break the addon."
+        bashio::log.fatal
+        bashio::log.fatal "Remove any conf_overrides you have added with a property"
+        bashio::log.fatal "matching this pattern and try again:"
+        bashio::log.fatal "'sharry.restserver.backend.files.*'"
         bashio::log.fatal
         bashio::exit.nok
     fi
@@ -96,17 +106,3 @@ else
     echo "CREATE DATABASE IF NOT EXISTS \`${DATABASE}\`;" \
         | mysql -h "${host}" -P "${port}" -u "${username}" -p"${password}"
 fi
-
-# --- SET LOG LEVEL ---
-# Can't be set with arguments or env variables, search & replace config file
-case "$(bashio::config 'log_level')" in \
-    trace)      log_level='TRACE';& \
-    debug)      log_level='DEBUG' ;; \
-    notice)     ;& \
-    warning)    log_level='WARN' ;; \
-    error)      ;& \
-    fatal)      log_level='ERROR' ;; \
-    *)          log_level='INFO' ;; \
-esac;
-bashio::log.info "Sharry log level set to ${log_level}"
-sed -i "s#%%LOG_LEVEL%%#${log_level}#g" /etc/sharry/logback.xml

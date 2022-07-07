@@ -16,7 +16,7 @@ declare base_url
 declare log_level
 declare db_type=mariadb
 declare database=sharry
-declare -a conf_props=("-Dlogback.configurationFile=/etc/sharry/logback.xml")
+declare -a conf_props=()
 
 # Load user's custom configuration overrides
 bashio::log.debug "Loading 'conf_overrides'..."
@@ -67,8 +67,12 @@ bashio::log.info "Sharry will be available at ${base_url}"
 conf_props+=("-D${SHARRY}.base-url=${base_url}")
 
 # Add other config options to properties array
-bashio::log.debug "Adding in secret, language and share config options..."
+bashio::log.debug "Adding in secret, language, theme and share config options..."
 conf_props+=("-D${SHARRY}.backend.auth.server-secret=$(bashio::config 'server_secret')")
+
+if bashio::config.exists 'theme'; then
+    conf_props+=("-D${SHARRY}.webapp.initial-theme=$(bashio::config 'theme')")
+fi
 
 if ! bashio::config.is_empty 'default_language'; then
     conf_props+=("-D${SHARRY}.webapp.default-language=$(bashio::config 'default_language')")
@@ -82,15 +86,27 @@ if bashio::config.exists 'share_max_valid_days'; then
     conf_props+=("-D${SHARRY}.backend.share.max-validity=$(bashio::config 'share_max_valid_days')d")
 fi
 
-log_level="$(bashio::config 'log_level')"
-if bashio::var.equals "${log_level}" "debug" || bashio::var.equals "${log_level}" "trace"; then
-    bashio::log.debug
-    bashio::log.debug "Printing all startup flags being provided to Sharry..."
-    for prop in "${conf_props[@]}"; do
-        bashio::log.debug "${prop}"
-    done
-    bashio::log.debug
-fi
+# --- SET LOG LEVEL ---
+# Can't be set with arguments or env variables, search & replace config file
+case "$(bashio::config 'log_level')" in \
+    trace)      log_level='Trace';& \
+    debug)      log_level='Debug' ;; \
+    notice)     ;& \
+    warning)    log_level='Warn' ;; \
+    error)      ;& \
+    fatal)      log_level='Error' ;; \
+    *)          log_level='Info' ;; \
+esac;
+bashio::log.info "Sharry log level set to ${log_level}"
+conf_props+=("-D${SHARRY}.logging.minimum-level=${log_level}")
+
+# Print all config options for debugging
+bashio::log.debug
+bashio::log.debug "Printing all startup flags being provided to Sharry..."
+for prop in "${conf_props[@]}"; do
+    bashio::log.debug "${prop}"
+done
+bashio::log.debug
 
 bashio::log.info "Handing over control to Sharry..."
 exec s6-setuidgid abc \

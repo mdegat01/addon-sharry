@@ -5,5 +5,3 @@ build_from:
 codenotary:
   base_image: codenotary@frenck.dev
   signer: codenotary@degatano.com
-args:
-  SHARRY_VERSION: 1.11.0

@@ -1,11 +1,11 @@
-ARG BUILD_FROM=ghcr.io/hassio-addons/base/amd64
+ARG BUILD_FROM=ghcr.io/hassio-addons/base
 
 # https://github.com/hassio-addons/addon-base/releases
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
 # https://github.com/eikek/sharry/releases
-ARG SHARRY_VERSION=1.9.0
+ARG SHARRY_VERSION=1.11.0
 
 # Add Sharry and java
 RUN set -eux; \

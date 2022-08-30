@@ -23,9 +23,9 @@ RUN set -eux; \
     apk del .build-deps; \
     \
     apk add --no-cache \
-        mariadb-client=10.6.8-r0 \
+        mariadb-client=10.6.9-r0 \
         netcat-openbsd=1.130-r3 \
-        openjdk11-jre=11.0.15_p10-r1 \
+        openjdk11-jre=11.0.16.1_p1-r0 \
         ; \
     java -version; \
     \
